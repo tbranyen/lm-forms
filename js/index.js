@@ -43,6 +43,7 @@ _.extend(Backbone.Form.prototype, {
 
 // Create a new Form.
 var TestForm = Backbone.Form.extend({
+  // Optional: this is how you would support dynamic changes.
   initialize: function() {
     // Whenever the name is changed, update the form.
     this.model.on("change:name", function(model, name) {
@@ -61,9 +62,7 @@ var layout = new Backbone.Layout({
 
   views: {
     div: new TestForm({
-      model: user,
-
-      fetch: function() {}
+      model: user
     })
   }
 });
