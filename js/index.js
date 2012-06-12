@@ -22,26 +22,42 @@ var user = new User({
   ]
 });
 
-_.extend(Backbone.Form.prototype, {
-  render: function(manage) {
-    // Have LayoutManager normalize the options.
-    var options = this._options();
+// Patch the Backbone.Form plugin to use the LayoutManager render function.
+Backbone.Form.prototype.render = function(manage) {
+  // Have LayoutManager normalize the options.
+  var options = this._options();
 
-    // Iterate and render each fieldset.
-    _.each(options.fieldsets, function(fieldset) {
-      this.$el.append(this.renderFieldset(fieldset));
+  // Remove all the existing stuff from this View.
+  this.$el.empty();
+
+  // Iterate and render each fieldset.
+  _.each(options.fieldsets, function(fieldset) {
+    this.$el.append(this.renderFieldset(fieldset));
+  }, this);
+
+  // Return the LayoutManager deferred.
+  return manage(this).render();
+};
+
+// Create a new Form.
+var TestForm = Backbone.Form.extend({
+  initialize: function() {
+    this.model.on("change", function() {
+      this.render();
     }, this);
 
-    // Return the LayoutManager deferred.
-    return manage(this).render();
+    // Ensure the Backbone.Form initialize is called, not sure why they aren't
+    // dealing with this override use-case already...
+    return Backbone.Form.prototype.initialize.apply(this, arguments);
   }
 });
 
+// Set up the layout to use the new form.
 var layout = new Backbone.Layout({
   template: "#main",
 
   views: {
-    div: new Backbone.Form({
+    div: new TestForm({
       model: user
     })
   }
