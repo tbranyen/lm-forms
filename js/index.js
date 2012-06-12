@@ -23,21 +23,23 @@ var user = new User({
 });
 
 // Patch the Backbone.Form plugin to use the LayoutManager render function.
-Backbone.Form.prototype.render = function(manage) {
-  // Have LayoutManager normalize the options.
-  var options = this._options();
+_.extend(Backbone.Form.prototype, {
+  render: function(manage) {
+    // Have LayoutManager normalize the options.
+    var options = this._options();
 
-  // Remove all the existing stuff from this View.
-  this.$el.empty();
+    // Remove all the existing stuff from this View.
+    this.$el.empty();
 
-  // Iterate and render each fieldset.
-  _.each(options.fieldsets, function(fieldset) {
-    this.$el.append(this.renderFieldset(fieldset));
-  }, this);
+    // Iterate and render each fieldset.
+    _.each(options.fieldsets, function(fieldset) {
+      this.$el.append(this.renderFieldset(fieldset));
+    }, this);
 
-  // Return the LayoutManager deferred.
-  return manage(this).render();
-};
+    // Return the LayoutManager deferred.
+    return manage(this).render();
+  }
+});
 
 // Create a new Form.
 var TestForm = Backbone.Form.extend({
@@ -59,7 +61,9 @@ var layout = new Backbone.Layout({
 
   views: {
     div: new TestForm({
-      model: user
+      model: user,
+
+      fetch: function() {}
     })
   }
 });

@@ -412,18 +412,13 @@ var LayoutManager = Backbone.View.extend({
           return handler;
         }
 
-        // If the fetch fails to properly fetch and render the template,
-        // continue on silently, because the end user is probably using a
-        // plugin such as backbone-forms.
-        try {
-          // Fetch layout and template contents
-          if (_.isString(template)) {
-            contents = options.fetch.call(handler, root._prefix + template);
-          // If its not a string just pass the object/function/whatever
-          } else if (template != null) {
-            contents = options.fetch.call(handler, template);
-          }
-        } catch (ex) {}
+        // Fetch layout and template contents
+        if (_.isString(template)) {
+          contents = options.fetch.call(handler, root._prefix + template);
+        // If its not a string just pass the object/function/whatever
+        } else if (template != null) {
+          contents = options.fetch.call(handler, template);
+        }
 
         // If the function was synchronous, continue execution.
         if (!handler._isAsync) {
