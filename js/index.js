@@ -42,8 +42,9 @@ Backbone.Form.prototype.render = function(manage) {
 // Create a new Form.
 var TestForm = Backbone.Form.extend({
   initialize: function() {
-    this.model.on("change", function() {
-      this.render();
+    // Whenever the name is changed, update the form.
+    this.model.on("change:name", function(model, name) {
+      this.setValue({ name: name });
     }, this);
 
     // Ensure the Backbone.Form initialize is called, not sure why they aren't
